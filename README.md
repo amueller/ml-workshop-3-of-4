@@ -9,7 +9,7 @@ Instructor
 
 ---
 
-This repository will contain the teaching material and other info associated with the "Advanced Scikit-learn".
+This repository will contain the teaching material and other info associated with the workshop "Advanced Advanced Machine Learning with scikit-learn Part I/II".
 
 Please download the Large Movie Review dataset from http://ai.stanford.edu/~amaas/data/sentiment/ before coming to the workshop!
 
