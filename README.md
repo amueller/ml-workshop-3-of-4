@@ -13,11 +13,29 @@ This repository will contain the teaching material and other info associated wit
 
 Please download the Large Movie Review dataset from http://ai.stanford.edu/~amaas/data/sentiment/ before coming to the workshop!
 
+About the workshop
+------------------
+Scikit-learn is a machine learning library in Python, that has become a valuable tool for many data science practitioners. This training will cover some of the more advanced aspects of scikit-learn, such as building complex machine learning pipelines, advanced model evaluation, feature engineering and working with imbalanced datasets.
+We will also work with text data using the bag-of-word method for classification.
+
+Prerequisites
+-------------
+This workshop assumes familiarity with Jupyter notebooks and basics of pandas, matplotlib and numpy.
+It also assumes some familiarity with the API of scikit-learn and how to do cross-validations and grid-search with scikit-learn.
+
+Content
+-------
+- Processing pipelines
+- Evaluation metrics
+- Feature Engineering and Feature Selection
+- Working with imbalanced data
+- Working with text data
+
 
 Obtaining the Tutorial Material
 --------------------------------
 
-If you are familiar with git, it is probably most convenient if you clone the GitHub repository. This
+If you are familiar with git, it is most convenient if you clone the GitHub repository. This
 is highly encouraged as it allows you to easily synchronize any changes to the material.
 
 ```
