@@ -20,7 +20,7 @@ class: center, middle
 
 ### Advanced Machine Learning with scikit-learn Part I/II
 
-# Model Evaluation
+# Model Evaluation in Classification
 
 Andreas C. Müller
 
@@ -494,115 +494,6 @@ def accuracy_scoring(est, X, y):
         return (est.predict(X) == y).mean()
 ```
 ???
----
-# You can access the model!
-.tiny-code[```python
-def few_support_vectors(est, X, y):
-    acc = est.score(X, y)
-    frac_sv = len(est.support_) / np.max(est.support_)
-    # I just made this up, don't actually use this
-    return acc / frac_sv```
-```python
-from sklearn.model_selection import GridSearchCV
-
-param_grid = {'C': np.logspace(-3, 2, 6),
-              'gamma': np.logspace(-3, 2, 6) / X_train.shape[0]}
-grid = GridSearchCV(SVC(), param_grid=param_grid, cv=10)
-grid.fit(X_train, y_train)
-print(grid.best_params_)
-print(grid.score(X_test, y_test))
-print(len(grid.best_estimator_.support_))
-```
-```
-{'C': 10.0, 'gamma': 0.074}
-0.991
-498
-```
-```python
-param_grid = {'C': np.logspace(-3, 2, 6),
-              'gamma': np.logspace(-3, 2, 6) / X_train.shape[0]}
-grid = GridSearchCV(SVC(), param_grid=param_grid, cv=10, scoring=few_support_vectors)
-grid.fit(X_train, y_train)
-print(grid.best_params_)
-print((grid.predict(X_test) == y_test).mean())
-print(len(grid.best_estimator_.support_))
-```
-```
-{'C': 100.0, 'gamma': 0.007}
-0.978
-405
-```]
-???
----
-class: centre,middle
-# Metrics for regression models
-???
----
-class:spacious
-# Build-in standard metrics
-- $\text{R}^2$ : easy to understand scale
-- MSE : easy to relate to input
-- Mean absolute error, median absolute error: more robust
-- When using “scoring” use “neg_mean_squared_error” etc
-???
----
-# Prediction plots
-.wide-left-column[
-.smaller[
-```python
-from sklearn.linear_model import Ridge
-from sklearn.datasets import load_boston
-boston = load_boston()
-X_train, X_test, y_train, y_test = train_test_split(
-    boston.data, boston.target)
-ridge = Ridge(normalize=True)
-ridge.fit(X_train, y_train)
-pred = ridge.predict(X_test)
-plt.plot(pred, y_test, 'o')
-```
-]]
-.narrow-right-column[
-![:scale 100%](images/regression_boston.png)
-]
-
-???
----
-class:split-40
-# Residual Plots
-.left-column[![:scale 50%](images/regression_boston.png)
-<br />
-![:scale 60%](images/regression_boston_2.png)]
-.right-column[
-![:scale 100%](images/regression_boston_3.png)]
-???
----
-# Target vs Feature
-![:scale 100%](images/target_vs_feature.png)
-???
----
-# Residual vs Feature
-![:scale 100%](images/residual_vs_feature.png)
-???
----
-class:spacious
-# Absolute vs Relative: MAPE
-`$$ \text{MAPE} = \frac{100}{n} \sum_{i=1}^{n}\left|\frac{y-\hat{y}}{y}\right|$$`
-
-.center[
-![:scale 50%](images/mape.png)
-]
-???
----
-class: spacious
-# Over vs under
--  Overprediction and underprediction can have different cost.
-- Try to create cost-matrix: how much does overprediction and underprediction cost? 
-- Is it linear?
-???
----
-class: center, middle
-
-# Questions ?
 
     </textarea>
     <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
