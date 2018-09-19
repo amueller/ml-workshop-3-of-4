@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Reminder on Scikit-learn API/title>
+    <title>Reminder on Scikit-learn API</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="style.css">
     <style>
@@ -42,12 +42,6 @@ class: center
 # Representing Data
 
 ![:scale 100%](images/matrix-representation.png)
----
-class: center
-
-# Training and Test Data
-
-![:scale 80%](images/train-test-split.png)
 
 ---
 class: center
@@ -96,7 +90,6 @@ So going back to nearest neighbors, what parameters correspond to high
 model complexity and what to low model complexity? high n_neighbors =
 low complexity!
 ---
----
 
 class: center, some-space
 # Cross-validation + test set
@@ -110,7 +103,6 @@ We start out by splitting of the test data, and then we perform
 cross-validation on the training set.
 Once we found the right setting of the parameters, we retrain on the
 whole training set and evaluate on the test set.
----
 ---
 # GridSearchCV
 .smaller[
@@ -163,10 +155,6 @@ setting with the best_score_ and best_params_ attributes.
 And finally we can compute the accuracy on the test set, simply but
 using the score method! That will use the retrained model under the hood.
 
----
-
-???
----
 
     </textarea>
     <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
