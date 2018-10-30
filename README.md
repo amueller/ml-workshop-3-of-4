@@ -67,7 +67,7 @@ This tutorial will require recent installations of
 - [IPython](http://ipython.readthedocs.org/en/stable/)
 - [Jupyter Notebook](http://jupyter.org)
 - mlxtend
-- imbalance-learn
+- imbalanced-learn
 
 The last one is important, you should be able to type:
 
