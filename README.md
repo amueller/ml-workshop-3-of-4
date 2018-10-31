@@ -25,11 +25,10 @@ It also assumes some familiarity with the API of scikit-learn and how to do cros
 
 Content
 -------
+- Review of scikit-learn API
 - Processing pipelines
 - Evaluation metrics
-- Feature Engineering and Feature Selection
 - Working with imbalanced data
-- Working with text data
 
 
 Obtaining the Tutorial Material
