@@ -34,12 +34,6 @@ FIXME better illustration for sampling
 FIXME better motivation for sampling / why we want to change things
 FIXME TOO SHORT
 FIXME Add estimators minimizing loss directly?
----
-class: center, middle
-
-## Recap on imbalanced data
-
-???
 
 ---
 class: spacious
@@ -119,16 +113,14 @@ class: center, middle
 ???
 
 ---
+class: compact 
 # Mammography Data
 
 .smaller[
-.left-column[
+.center[
+![:scale 50%](images/mammography_data.png)
+]
 ```python
-import openml
-# mammography dataset
-# https://www.openml.org/d/310
-data = openml.datasets.get_dataset(310)
-X, y = data.get_data(target='class')
 X.shape
 ```
 (11183, 6)
@@ -136,12 +128,7 @@ X.shape
 np.bincount(y)
 ```
 array([10923,   260])
-]
-.right-column[
-.center[
-![:scale 100%](images/mammography_data.png)
-]
-]
+
 ]
 ???
 Note: Split one slide to two due to size constraints.
@@ -156,27 +143,19 @@ from sklearn.model_selection import cross_validate
 from sklearn.linear_model import LogisticRegression
 
 scores = cross_validate(LogisticRegression(),
-                        X_train, y_train, cv=10, scoring=('roc_auc', 'average_precision'))
+                        X_train, y_train, cv=10,
+                        scoring=('roc_auc', 'average_precision'))
 scores['test_roc_auc'].mean(), scores['test_average_precision'].mean()
 ```
 0.920, 0.630 
 ```python
 from sklearn.ensemble import RandomForestClassifier
 scores = cross_validate(RandomForestClassifier(n_estimators=100),
-                        X_train, y_train, cv=10, scoring=('roc_auc', 'average_precision'))
+                        X_train, y_train, cv=10,
+                        scoring=('roc_auc', 'average_precision'))
 scores['test_roc_auc'].mean(), scores['test_average_precision'].mean()
 ```
 0.939, 0.722
-]
-
-???
-
----
-
-# Mammography Data
-
-.center[
-![:scale 85%](images/mammography_features23.png)
 ]
 
 ???
@@ -287,7 +266,8 @@ from imblearn.pipeline import make_pipeline as make_imb_pipeline
 
 undersample_pipe = make_imb_pipeline(RandomUnderSampler(), LogisticRegressionCV())
 scores = cross_validate(undersample_pipe,
-                        X_train, y_train, cv=10, scoring=('roc_auc', 'average_precision'))
+                        X_train, y_train, cv=10,
+                        scoring=('roc_auc', 'average_precision'))
 scores['test_roc_auc'].mean(), scores['test_average_precision'].mean()
 # was 0.920, 0.630 without
 ```
@@ -301,7 +281,8 @@ scores['test_roc_auc'].mean(), scores['test_average_precision'].mean()
 undersample_pipe_rf = make_imb_pipeline(RandomUnderSampler(),
                                         RandomForestClassifier())
 scores = cross_validate(undersample_pipe_rf,
-                        X_train, y_train, cv=10, scoring=('roc_auc', 'average_precision'))
+                        X_train, y_train, cv=10,
+                        scoring=('roc_auc', 'average_precision'))
 scores['test_roc_auc'].mean(), scores['test_average_precision'].mean()
 # was 0.939, 0.722 without
 ```
@@ -347,7 +328,8 @@ print(np.bincount(y_train_oversample))
 ```python
 oversample_pipe = make_imb_pipeline(RandomOverSampler(), LogisticRegression())
 scores = cross_validate(oversample_pipe,
-                        X_train, y_train, cv=10, scoring=('roc_auc', 'average_precision'))
+                        X_train, y_train, cv=10,
+                        scoring=('roc_auc', 'average_precision'))
 scores['test_roc_auc'].mean(), scores['test_average_precision'].mean()
 ```
 0.917, 0.585
@@ -358,7 +340,8 @@ scores['test_roc_auc'].mean(), scores['test_average_precision'].mean()
 oversample_pipe_rf = make_imb_pipeline(RandomOverSampler(),
                                        RandomForestClassifier())
 scores = cross_validate(oversample_pipe_rf,
-                        X_train, y_train, cv=10, scoring=('roc_auc', 'average_precision'))
+                        X_train, y_train, cv=10,
+                        scoring=('roc_auc', 'average_precision'))
 scores['test_roc_auc'].mean(), scores['test_average_precision'].mean()
 ```
 0.926, 0.715
@@ -445,13 +428,15 @@ Weighted vote
 .smaller[
 ```python
 scores = cross_validate(LogisticRegression(class_weight='balanced'),
-                        X_train, y_train, cv=10, scoring=('roc_auc', 'average_precision'))
+                        X_train, y_train, cv=10,
+                        scoring=('roc_auc', 'average_precision'))
 scores['test_roc_auc'].mean(), scores['test_average_precision'].mean()
 ```
 0.918, 0.587
 ```python
 scores = cross_validate(RandomForestClassifier(n_estimators=100, class_weight='balanced'),
-                        X_train, y_train, cv=10, scoring=('roc_auc', 'average_precision'))
+                        X_train, y_train, cv=10,
+                        scoring=('roc_auc', 'average_precision'))
 scores['test_roc_auc'].mean(), scores['test_average_precision'].mean()
 ```
 0.917, 0.701
@@ -485,7 +470,8 @@ tree = DecisionTreeClassifier(max_features='auto')
 resampled_rf = BalancedBaggingClassifier(base_estimator=tree,
                                          n_estimators=100, random_state=0)
 scores = cross_validate(resampled_rf,
-                        X_train, y_train, cv=10, scoring=('roc_auc', 'average_precision'))
+                        X_train, y_train, cv=10,
+                        scoring=('roc_auc', 'average_precision'))
 scores['test_roc_auc'].mean(), scores['test_average_precision'].mean()
 ```
 0.957, 0.654
@@ -507,13 +493,10 @@ class: spacious
 
 # Summary
 
-- Always check roc_auc, look at curve
+- Always check roc_auc and AP look at curves
 - Undersampling is very fast and can help!
 - Undersampling + Ensembles is very powerful!
-- Many smart sampling strategies, mixed outcomes
-- SMOTE allows adding new interpolated samples,
-works well in practice
-- More advanced variants of SMOTE available
+- Can add synthetic samples with SMOTE
 
 ???
 
