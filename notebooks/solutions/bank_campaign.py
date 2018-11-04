@@ -21,7 +21,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
 
 param_grid = {'max_depth': [3, 5, 10, 20, 30, 40, 50],
-              'max_features':[4, 6, 7, 8, 10, 15, 25, 40]}
+              'max_features':[4, 8, 16, 20, 25, 40]}
 grid = GridSearchCV(RandomForestClassifier(n_estimators=100),
                     param_grid=param_grid, cv=5)
 
@@ -35,8 +35,13 @@ res_piv = pd.pivot_table(
     res, values='mean_test_score', index='param_max_depth',
     columns='param_max_features')
 
-display(res.piv)
+display(res_piv)
 
 import matplotlib.pyplot as plt
 %matplotlib inline
 plt.matshow(res_piv.values)
+plt.xlabel(res_piv.columns.name)
+plt.xticks(range(res_piv.shape[1]), res_piv.columns)
+plt.ylabel(res_piv.index.name)
+plt.yticks(range(res_piv.shape[0]), res_piv.index);
+plt.colorbar()
