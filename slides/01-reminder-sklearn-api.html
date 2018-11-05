@@ -131,7 +131,7 @@ grid = GridSearchCV(KNeighborsClassifier(), param_grid=param_grid, cv=10)
 grid.fit(X_train, y_train)
 
 print("best mean cross-validation score: {:.3f}".format(grid.best_score_))
-print("best parameters: {}".format(grid.best_params_))
+print("best parameters:", grid.best_params_))
 
 print("test-set score: {:.3f}".format(grid.score(X_test, y_test)))
 ```
