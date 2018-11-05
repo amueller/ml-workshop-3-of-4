@@ -20,7 +20,7 @@ print("n_features: ", X.shape[1])
 from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
 
-param_grid = {'max_depth': [3, 5, 10, 20, 30, 40, 50],
+param_grid = {'max_depth': [3, 5, 8, 10, 15, 20, 30],
               'max_features':[4, 8, 16, 20, 25, 40]}
 grid = GridSearchCV(RandomForestClassifier(n_estimators=100),
                     param_grid=param_grid, cv=5)
