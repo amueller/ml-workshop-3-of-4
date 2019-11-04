@@ -21,9 +21,9 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
 
 param_grid = {'max_depth': [3, 5, 8, 10, 15, 20, 30],
-              'max_features':[4, 8, 16, 20, 25, 40]}
-grid = GridSearchCV(RandomForestClassifier(n_estimators=100),
-                    param_grid=param_grid, cv=5)
+              'max_features': [4, 8, 16, 20, 25, 40]}
+grid = GridSearchCV(RandomForestClassifier(),
+                    param_grid=param_grid)
 
 # use [::10] to subsample by a factor of 10 for impatience
 # could also have used StratifiedShuffleSplit(train_size=.1)
@@ -43,5 +43,5 @@ plt.matshow(res_piv.values)
 plt.xlabel(res_piv.columns.name)
 plt.xticks(range(res_piv.shape[1]), res_piv.columns)
 plt.ylabel(res_piv.index.name)
-plt.yticks(range(res_piv.shape[0]), res_piv.index);
+plt.yticks(range(res_piv.shape[0]), res_piv.index)
 plt.colorbar()
