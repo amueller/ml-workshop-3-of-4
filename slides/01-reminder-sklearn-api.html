@@ -120,6 +120,23 @@ cross-validation on the training set.
 Once we found the right setting of the parameters, we retrain on the
 whole training set and evaluate on the test set.
 ---
+class: center, middle
+![:scale 80%](images/gridsearch_workflow.png)
+
+???
+Here is a conceptual overview of this way of tuning parameters, we start
+of with the dataset and a candidate set of parameters we want to try,
+labeled parameter grid, for example the number of neighbors.
+
+We split the dataset in to training and test set. We use cross-validation
+and the parameter grid to find the best parameters.
+We use the best parameters and the training set to build a model with
+the best parameters,
+and finally evaluate it on the test set.
+Because this is such a common pattern, there is a helper class for this
+in scikit-learn, called GridSearch CV, which does most of these steps
+for you.
+---
 # GridSearchCV
 .smaller[
 ```python
