@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Gradient Boosting</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        @import url(https://fonts.googleapis.com/css?family=Garamond);
+        @import url(https://fonts.googleapis.com/css?family=Muli:400,700,400italic);
+        @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+      </style>
+    </head>
+    <body>
+      <textarea id="source">
+
+class: center, middle
+
+![:scale 40%](images/sklearn_logo.png)
+
+### Intermediate  Machine learning with scikit-learn
+
+# Gradient Boosting
+
+Andreas C. Müller
+
+Columbia University, scikit-learn
+
+.smaller[https://github.com/amueller/ml-workshop-2-of-4]
+
+---
+
+???
+We'll continue tree-based models, talking about boosting.
+Another ensemble technique called stacking.
+Finally, a technique called calibration that looks somewhat similar to ensembles
+but has the goal of obtaining good probability estimates from any classifier.
+
+FIXME: XGBOOST!!
+FIXME early stopping
+FIXME GBRT: better explain log-loss
+FIXME: add example of calibrated and inaccurate vs accurate but not calibrated!
+FIXME: calibration: what are the estimators fit to, and why does fitting it to 0 and 1 create probabilities in between
+
+Partial dependence plot. how is that different from feature importances.
+calibration curve plotting: bins are different for hist and calibration curve?
+slide 27: maybe put probabilities on x axis?
+calibration curve: blue histogram is number of total points, y axis not labeled
+---
+class: centre,middle
+# Gradient Boosting
+???
+Gradient boosting is one of the most successfull supervised
+machine learning methods in practice. It's often used in
+kaggle to win competition, it's used for credit scoring,
+it's one of the standard tools of the trade. It's one of the
+best of-the-shelf models A standard implementation that
+people use is XGBoost, but there's also an implementation in
+scikit-learn, and we'll talk about both of them.
+
+Last time we talked about Random forests, which builds many trees independently, each randomized in a different way, and then averages their predictions.
+Gradient boosting on the other hand builds trees one by one in a sequential manner, with each tree requiring the results of previous trees.
+Often, Gradient boosting is done with very small trees, or even decision stumps, which is trees of depth one, so a single split.
+
+---
+class: center, middle
+# Boosting (in General)
+
+???
+ - “Meta-algorithm” to create strong learners from weak learners.
+ - AdaBoost, GentleBoost, …
+ - Trees or stumps work best
+ - Gradient Boosting often the best of the bunch
+ - Many specialized algorithms (ranking etc)
+
+This is an instance of a more general family of models,
+called boosting models, which all iteratively try to improve
+a model built up from weak learners. Gradient boosting is
+this particular technique where we are trying to fit the
+residuals, and it's been found to work very well in
+practice, in particular if you're using shallow trees as the
+weak learners. In principle, you could use any model as a
+weak learner, but trees just work really well.
+
+---
+
+# Gradient Boosting Algorithm
+
+
+
+`$$ f_{1}(x) \approx y  $$`
+
+`$$ f_{2}(x) \approx y - f_{1}(x) $$`
+
+`$$ f_{3}(x) \approx y - f_{1}(x) - f_{2}(x)$$`
+
+--
+
+$y \approx$ ![:scale 22.5%](images/grad_boost_term_1.png) + ![:scale 22.5%](images/grad_boost_term_2.png) + ![:scale 20%](images/grad_boost_term_3.png) + ...
+???
+Let's look at the regression case first. We start by
+building a single tree f1 to try to predict the output y.
+But we strongly restrict f1, so it will be rather bad at
+predicting y. Next, we'll look at the residual of this first
+model, so y - f1(x). We now train a new model f2 to try and
+predict this residual, in other words to correct the
+mistakes made by f1. Again, this will be a very simple
+model, so it will still not be able to fix all errors. Then,
+we look at the residual of both of the models together, so y
+- f1(x) - f2(x), so the mistakes that could not be fixed by
+f2, and we build f3 to fix that, and so on. This is natural
+for regression. For classification this is not as clear. For
+binary classification you use log-loss, or rather you apply
+the logistic function to get a binary prediction, for
+multi-class you can use 1 vs rest.
+
+So we're sequentially building up a model using what's
+called "weak learners", small trees, and create a more
+powerful composite model.
+
+---
+# Gradient Boosting Algorithm
+
+
+
+`$$ f_{1}(x) \approx y  $$`
+
+`$$ f_{2}(x) \approx y - \gamma f_{1}(x) $$`
+
+`$$ f_{3}(x) \approx y - \gamma f_{1}(x) - \gamma f_{2}(x)$$`
+
+$y \approx \gamma$ ![:scale 22.5%](images/grad_boost_term_1.png) + $\gamma$ ![:scale 22.5%](images/grad_boost_term_2.png) + $\gamma$ ![:scale 20%](images/grad_boost_term_3.png) + ...
+<br />
+<br />
+Learning rate $\gamma, i.e. 0.1$
+
+???
+- Iteratively add regression trees to model
+- Use log loss for classification
+- Discount update by learning rate
+
+FIXME plot for regression models
+Come back to this
+---
+#GradientBoostingRegressor
+
+.center[
+![:scale 50%](images/grad_boost_regression_steps.png)
+]
+???
+Here's an illustration for doing this for regression. This
+is a 1D regression dataset for illustration purposes here to
+form features on the x-axis, the prediction is on the
+y-axis.
+
+
+In the first step, I'm just fitting my tree to the data. I
+use a simple tree of depth 3. The depth 3 tree is not able
+to completely model the data and so the orange is the tree
+that was fit. After this first step, I look at the total
+predictions. So this is just gamma times the predictions
+made by the first tree. So you see everything is sort of
+squashed together. This is the effect of gamma. The blue
+points here in this next panel is this data minus the minus
+the predictions from step one, and so this is the residual.
+It still looks pretty much the same, because we took only a
+small step. Then I fit another tree to this residuals again
+of depth three. Then here's the total prediction, which is
+gamma times the first tree plus gamma times the second tree,
+followed against the original data. The orange has more
+steps now because it's a combination of two trees.
+
+As I continue the same procedure until step five, you can
+see that residual gets much smaller and it has learned most
+of the variations in the data. A total linear combination of
+all the trees and learning looks like this. And if I keep
+doing this, then at some point, residuals will become very
+small. And the total prediction will fit the data better and
+better.
+
+The question is can I extrapolate?
+
+The answer is no.
+
+The question is how is this different?
+
+And it's quite different. It’s kind of hard for me to answer
+his question.
+
+A) The combination of stumps is different than building a
+deeper tree because you always apply all the splits to the
+whole dataset. Whereas if you make a tree deeper, you will
+have different splits on the deeper nodes. If you have
+already like 10 nodes, and you want to grow one more level,
+each of these parts of the data will have a different split.
+Whereas if I add another stump it will be on a global level.
+In decision trees, decisions are very hard. And here you
+don't trust any hard decisions. So you only go a little bit
+in each direction.
+
+B) This works way better.
+
+So this was for regression and because it's easier to
+visualize, you can do the same thing for classification.
+
+Basically, what gradient boosting for classification does is
+you’re letting regression trees to learn decision function.
+So basically, you're doing regression again, but you're
+doing logistic regression. Instead of using a linear model
+for logistic regression, we're now using this linear
+combination of trees. So in other words, what we're doing is
+we're applying a log loss, and we're trying to find the
+regression function that has a small log loss. This f is the
+decision function that we're doing. And so inside a gradient
+boosting classifier, you're not actually learning
+classification trees, you're learning regression trees,
+which are trying to predict the probability, which is quite
+different.
+
+The question is, how they're different?
+
+The same is true for f1. If I fit f1, exactly to y this
+becomes 0. One reason is the gamma, which means I only go a
+small step. But even if I set gamma equal to one, the point
+is that I restricted my f1 to not completely fit the data.
+I'm not trying to completely overfit the data, I'm trying to
+use a simple model. So if I use a tree of depth one, there
+will be a very large residual.
+
+---
+#GradientBoostingClassifier
+
+.center[
+![:scale 70%](images/grad_boost_depth2.png)
+]
+???
+Here’s an illustration of what this might look like for
+classification. This is basically the same thing going on.
+I’m plotting the probabilities assigned by the model.
+
+Here's a first estimator, which makes some mistakes here and
+makes a bunch of mistake in the middle. This is the decision
+tree of depth two. Then I fit the model to the residuals
+here. To minimize the log loss of this dataset changes
+something in the middle, and so on. And you can see that as
+I add more and more estimator it fits the data better and
+better and gets more and more complex decision boundaries.
+
+Since it works like a gradient descent on log loss, it's a
+little bit harder to visualize this for classification.
+
+White mean probability of 0.5 (which is a tie). Red means
+high probability for the red class. Blue means a high
+probability for the blue class. Here, clearly, it hasn't fit
+the data perfectly. So I could add more and more models and
+then, in the end, it would fit the data perfectly.
+
+For multi-class, the default thing to do is One Versus Rest.
+
+---
+class:spacious
+# Gradient Boosting Advantages
+
+- Slower to train than RF (if using "old" GradientBoostingRegressor), but much faster to predict
+- Very fast using XGBoost, LightGBM, pygbm, new scikit-learn implementation HistGradientBoosting
+- Small model size
+- Typically more accurate than Random Forests
+???
+It's sort of slower to train if you're training serial, but
+if you paralyze it, it's often faster to train since it has
+a much smaller model size. So the trees are usually not as
+deep and you don't need as many because you're doing much
+more focused learning where you try to correct the mistakes
+of the other models. So usually it’s very fast to predict
+because prediction can happen in parallel over all the
+trees, while learning cannot happen in parallel over all the
+trees necessarily. Usually, this is more accurate than
+random forests.
+
+The question is for the same number of estimators, how does
+low versus high learning rate changes?
+
+High learning rate allows you to fit the data more strongly
+and also overfit the data more strongly.
+---
+
+class:spacious
+# Tuning Gradient Boosting
+- Pick n_estimators, tune learning rate
+- Can also tune max_features
+- Typically strong pruning via max_depth
+
+???
+There are several things you can tune about the gradient
+boosting. A common approach is to pick the number of
+estimators that you have time for. So runtime is obviously
+linear than number of estimators because you need to build
+each tree one by one. Each tree is built with the same
+parameters. And then you can tune the learning rate to see
+how strongly you want to fit the data.
+
+You can also tune something like max features if you want to
+add more randomness, but that's actually not very commonly
+used. You can also subsample the data if you want faster
+training. And typically there's a maximum depth.
+Traditionally, it was like maximum depth of one, two or
+three, though in kaggle people are doing like 8 to 10 or
+something. But typically, the depth is much, much smaller
+than for random forests. This means the model will be small
+in memory, and also will be faster to predict since you have
+less deep trees to traverse.
+
+---
+
+# XGBoost
+`conda install -c conda-forge xgboost`
+
+```python
+from xgboost import XGBClassifier
+xgb = XGBClassifier()
+xgb.fit(X_train, y_train)
+xgb.score(X_test, y_test))
+```
+
+- supports missing values
+- supports multi-core
+
+???
+In terms of implementation, there's a couple of
+implementation methods. Scikit-learn has gradient boosting
+classifier and gradient boosting regressor. Unfortunately,
+they are rather slow.
+
+So one of the most commonly used packages is XGBoost, which
+you can install from conda forge for example. It's
+completely scikit-learn compatible. So you can import
+XGBClassifier if you want you can use it with grid search or
+with pipelines.
+
+The cool thing is its fast. It supports missing values so
+you don't need to do an imputation strategy, you can put
+them directly into XGBoost. And it also supports multi-core.
+
+The gradient boosting in scikit-learn is just sequential on
+a single core which on most of the machines are not great.
+If you have a big machine you want to use all the cores in
+parallel. You can’t do that with scikit-learn but you can do
+it with XGBoost.
+
+For random forest, on the other hand, scikit-learn can also
+run random forest in parallel, because it's much easier.
+XGBoost also has a random forest. XGBoost also has some
+enhancements to the algorithm. It has L1 and L2 penalties
+for the leaves, so you can do something like an elastic net
+or lasso penalty to the leaves. I think by default, it's
+disabled. But they are not really training like the vanilla
+decision trees.
+
+One of the reasons they're faster is because they have a
+faster implementation. But you can make even faster if you
+use approximate splits in the trees.
+
+If you want to find a split, you need to search over all
+features and you need to search over all possible thresholds
+on the feature. Searching over all possible thresholds on
+the feature means soaring feature, which is an analog
+operation. Instead, what you can do is you can bin the
+features, and then its linear time operation but the
+threshold will be approximate.
+
+And that will make your computation much faster.
+- Efficient implementation of gradient boosting (5x sklearn)
+- Improvements on original algorithm
+- https://arxiv.org/abs/1603.02754
+- Adds l1 and l2 penalty on leaf-weights
+- Fast approximate split finding
+- Scikit-learn compatible interface
+
+---
+# HistGradientBoostingClassifier
+
+![:scale 100%](images/hist_gradient_boosting.png)
+---
+# Early stopping
+
+- Adding trees can lead to overfitting
+- Stop adding trees when validation accuracy stops increasing
+- Optional in XGBoost and sklearn >= 0.20
+
+???
+As I said earlier, if you add more and more trees, the
+algorithms can overfit. So instead of searching for the
+learning rate, or searching for number of trees, you can
+also do early stopping. Because this is a sequential
+algorithm that gets better and better the more trees you
+add, you can just use a validation set and stop adding trees
+once you overfit. You can do that both with scikit-learn and
+XGBoost.
+
+Basically, the idea is that you pick a large number of
+estimators and you have a separate validation set and if the
+validation set accuracy doesn't improve or if it decreases
+for number of iterations, say five, then you just stop the
+learning. This way, you get results faster, because you
+don't keep learning but also you possibly get a better model
+because you know the overfitting.
+
+The only downside stopping learning is that you have fewer
+data to train your model because you need to the validation
+set for early stopping. You’ll still need a separate test
+set to see how well the model actually does. You can't use
+the same set for early stopping and for evaluation.
+---
+class:spacious
+# More Tuning of Gradient Boosting
+- Tune max_features
+- Tune column subsampling, row subsampling
+- Typically strong pruning via max_depth
+- Regularization
+- Pick learning rate and do early stopping?
+
+
+    </textarea>
+    <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    <script>
+    // Config Remark
+    remark.macros['scale'] = function (percentage) {
+        var url = this;
+        return '<img src="' + url + '" style="width: ' + percentage + '" />';
+    };
+    config_remark = {
+        highlightStyle: 'magula',
+        highlightSpans: true,
+        highlightLines: true,
+        ratio: "16:9"
+    };
+      var slideshow = remark.create(config_remark);
+    // Configure MathJax
+    MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'] /* removed 'code' entry*/
+    }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i = 0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+    </script>
+  </body>
+</html>
