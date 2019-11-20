@@ -41,50 +41,6 @@ I want to talk a bit more about preprocessing and
 cross-validation here, and introduce pipelines.
 
 ---
-
-class: some-space
-
-#Leaking Information
-
-.left-column[
-Information Leak
-![:scale 100%](images/information_leak_preprocessing.png)
-]
-.right-column[
-No Information leakage
-![:scale 100%](images/no_information_leak_preprocessing.png)]
-
-.reset-column[
-Need to include preprocessing in cross-validation !
-]
-
-???
-
-What we did was we trained the scaler on the training data,
-and then applied cross-validation to the scaled data. Tha’s
-what’s show on the left. The problem is that we use the
-information of all of the training data for scaling, so in
-particular the information in the test fold. This is also
-known as information leakage. If we apply our model to new
-data, this data will not have been used to do the scaling,
-so our cross-validation will give us a biased result that
-might be too optimistic.
-
-On the right you can see how we should do it: we should only
-use the training part of the data to find the mean and
-standard deviation, even in cross-validation. That means
-that for each split in the cross-validation, we need to
-scale the data a bit differently. This basically means the
-scaling should happen inside the cross-validation loop, not
-outside.
-
-In practice, estimating mean and standard deviation is quite
-robust and you will not see a big difference between the two
-methods. But for other preprocessing steps that we’ll see
-later, this might make a huge difference. So we should get
-it right from the start.
-
----
 class: smaller
 
 ```python
