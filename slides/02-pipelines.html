@@ -238,6 +238,45 @@ all transformations are contained in the pipeline.
 You should always use pipelines for preprocessing. Not only
 does it make your code shorter, it also makes it less likely
 that you have bugs.
+---
+# ColumnTransformer
+
+```python
+categorical = df.dtypes == object
+
+preprocess = make_column_transformer(
+    (StandardScaler(), ~categorical),
+    (OneHotEncoder(), categorical))
+
+```
+???
+New in scikit-learn 0.20 is the column transformer, which
+allows you to transforms only some of the columns. For
+example, you can call categorical encoder only on the
+categorical columns and call StandardScaler on the
+non-categorical columns, and then use that to preprocess
+your data. Right now using Pandas, make sure your column
+names match up, make everything to an integer,
+or use column transformer and everything is awesome.
+
+In contrast to basically all other estimators in sklearn,
+this uses the column information in pandas and allows you to slice
+out different columns based on column names, integer indices or boolean masks.
+In this example I'm constructing a boolean mask
+
+---
+class:center, middle
+![:scale 100%](images/column_transformer_schematic.png)
+???
+Here's a schematic of the column transformer.
+Most commonly you might want to separate continuous and categorical columns,
+but you can select any subsets of columns you like. They can also overlap.
+Or you can apply multiple transformations to the same set of columns.
+Let's say I want a scaled version of the data, but I also want to
+extract principal components. I can use the same column as inputs to multiple
+transformers, and the results will be concatenated.
+
+FIXME add code
 
     </textarea>
     <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
