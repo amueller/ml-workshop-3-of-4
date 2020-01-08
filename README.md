@@ -1,5 +1,5 @@
-Advanced Machine Learning with scikit-learn Part I/II
-========================================================
+Advanced Machine Learning: Pipelines and Evaluation Metrics
+===========================================================
 
 
 Part 3 of 4
@@ -22,8 +22,19 @@ Please download the Large Movie Review dataset from http://ai.stanford.edu/~amaa
 
 About the workshop
 ------------------
-Scikit-learn is a machine learning library in Python, that has become a valuable tool for many data science practitioners. This training will cover some of the more advanced aspects of scikit-learn, such as building complex machine learning pipelines, advanced model evaluation, feature engineering and working with imbalanced datasets.
-We will also work with text data using the bag-of-word method for classification.
+Scikit-learn is a machine learning library in Python, that has become a
+valuable tool for many data science practitioners. This training will cover
+some of the more advanced aspects of scikit-learn, such as building complex
+machine learning pipelines and advanced model evaluation.
+Model evaluation is an underappreciated aspect of machine learning, but
+using the right metric to measure success is critical. Practitioners
+are often faced with imbalanced classification tasks, where accuracy
+can be uninformative or misleading. We will discuss other metrics,
+when to use them, and how to compute them with scikit-learn.
+We will also look into how to build processing pipelines using scikit-learn,
+to chain multiple preprocessing techniques together with supervised models,
+and how to tune complex pipelines.
+
 
 Prerequisites
 -------------
@@ -35,7 +46,6 @@ Content
 - Review of scikit-learn API
 - Processing pipelines
 - Evaluation metrics
-- Working with imbalanced data
 
 
 Obtaining the Tutorial Material
