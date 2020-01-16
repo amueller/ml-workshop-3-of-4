@@ -9,6 +9,15 @@ Other parts:
 - [Part 2](https://github.com/amueller/ml-workshop-2-of-4)
 - [Part 4](https://github.com/amueller/ml-workshop-4-of-4)
 
+
+Content
+-------
+- [Review of scikit-learn API](https://amueller.github.io/ml-workshop-2-of-4/slides/01-reminder-sklearn-api.html)
+- [Gradient Boosted Trees](https://amueller.github.io/ml-workshop-2-of-4/slides/02-gradient-boosting)
+- [Building workflows with Pipelines](https://amueller.github.io/ml-workshop-2-of-4/slides/03-pipelines.html)
+- [Evaluation metrics for classification](https://amueller.github.io/ml-workshop-2-of-4/slides/04-model-evaluation.html)
+
+
 Instructor
 -----------
 
@@ -41,11 +50,6 @@ Prerequisites
 This workshop assumes familiarity with Jupyter notebooks and basics of pandas, matplotlib and numpy.
 It also assumes some familiarity with the API of scikit-learn and how to do cross-validations and grid-search with scikit-learn.
 
-Content
--------
-- Review of scikit-learn API
-- Processing pipelines
-- Evaluation metrics
 
 
 Obtaining the Tutorial Material
