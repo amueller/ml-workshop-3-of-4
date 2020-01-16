@@ -12,10 +12,10 @@ Other parts:
 
 Content
 -------
-- [Review of scikit-learn API](https://amueller.github.io/ml-workshop-2-of-4/slides/01-reminder-sklearn-api.html)
-- [Gradient Boosted Trees](https://amueller.github.io/ml-workshop-2-of-4/slides/02-gradient-boosting)
-- [Building workflows with Pipelines](https://amueller.github.io/ml-workshop-2-of-4/slides/03-pipelines.html)
-- [Evaluation metrics for classification](https://amueller.github.io/ml-workshop-2-of-4/slides/04-model-evaluation.html)
+- [Review of scikit-learn API](https://amueller.github.io/ml-workshop-3-of-4/slides/01-reminder-sklearn-api.html)
+- [Gradient Boosted Trees](https://amueller.github.io/ml-workshop-3-of-4/slides/02-gradient-boosting)
+- [Building workflows with Pipelines](https://amueller.github.io/ml-workshop-3-of-4/slides/03-pipelines.html)
+- [Evaluation metrics for classification](https://amueller.github.io/ml-workshop-3-of-4/slides/04-model-evaluation.html)
 
 
 Instructor
