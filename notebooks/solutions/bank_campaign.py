@@ -2,13 +2,17 @@ import pandas as pd
 data = pd.read_csv("data/bank-campaign.csv")
 display(data.head())
 
+
+
 y = data.target
 X = data.drop("target", axis=1)
 
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y)
 
-print("label proportions:", y.value_counts() / len(y))
+print("label proportions:\n", y.value_counts() / len(y))
+
+
 
 # Get reasonable tree depth:
 from sklearn.tree import DecisionTreeClassifier
@@ -16,6 +20,8 @@ tree = DecisionTreeClassifier().fit(X_train, y_train)
 # new in 0.21, use tree.tree_.max_depth in 0.20
 print("Tree depth: ", tree.get_depth())
 print("n_features: ", X.shape[1])
+
+
 
 from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
